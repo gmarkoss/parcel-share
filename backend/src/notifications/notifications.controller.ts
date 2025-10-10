@@ -8,8 +8,7 @@ import {
   ParseBoolPipe,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard, CurrentUser } from '../common';
 import { User } from '../entities/user.entity';
 
 @Controller('notifications')

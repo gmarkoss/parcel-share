@@ -13,8 +13,7 @@ import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripStatusDto } from './dto/update-trip-status.dto';
 import { SearchTripsDto } from './dto/search-trips.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard, CurrentUser } from '../common';
 import { User } from '../entities/user.entity';
 
 @Controller('trips')

@@ -14,8 +14,7 @@ import { CreateParcelDto } from './dto/create-parcel.dto';
 import { UpdateParcelStatusDto } from './dto/update-parcel-status.dto';
 import { SearchParcelsDto } from './dto/search-parcels.dto';
 import { AcceptParcelDto } from './dto/accept-parcel.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard, CurrentUser } from '../common';
 import { User } from '../entities/user.entity';
 
 @Controller('parcels')
