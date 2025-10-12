@@ -13,11 +13,15 @@ import {
 
 export class ResponseMapper {
   static toUserResponse(user: User | any): UserResponseDto {
+    const firstName = user.name?.split(' ')[0] || user.name;
+    const lastName = user.name?.split(' ').slice(1).join(' ') || '';
+    
     return {
       id: user.id,
       email: user.email,
-      firstName: user.name?.split(' ')[0] || user.name, // Map name to firstName
-      lastName: user.name?.split(' ').slice(1).join(' ') || '', // Map name to lastName
+      name: user.name, // Keep original name field
+      firstName,
+      lastName,
       phoneNumber: user.phone, // Map phone to phoneNumber
       profilePicture: user.photoUrl, // Map photoUrl to profilePicture
       bio: undefined, // Not in entity yet
