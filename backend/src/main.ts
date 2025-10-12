@@ -3,6 +3,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import {
+  UserResponseDto,
+  ParcelResponseDto,
+  TripResponseDto,
+  MatchResponseDto,
+  ReviewResponseDto,
+} from './common/dto';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -54,12 +61,20 @@ async function bootstrap() {
     )
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, {
-    customSiteTitle: 'Parcel Sharing API Docs',
-    customfavIcon: 'https://nestjs.com/img/logo_text.svg',
-    customCss: '.swagger-ui .topbar { display: none }',
-  });
+         const document = SwaggerModule.createDocument(app, config, {
+           extraModels: [
+             UserResponseDto,
+             ParcelResponseDto,
+             TripResponseDto,
+             MatchResponseDto,
+             ReviewResponseDto,
+           ],
+         });
+         SwaggerModule.setup('api/docs', app, document, {
+           customSiteTitle: 'Parcel Sharing API Docs',
+           customfavIcon: 'https://nestjs.com/img/logo_text.svg',
+           customCss: '.swagger-ui .topbar { display: none }',
+         });
 
   const port = configService.get<number>('PORT', 3001);
   await app.listen(port);

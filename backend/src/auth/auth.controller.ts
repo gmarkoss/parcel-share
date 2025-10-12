@@ -3,6 +3,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignUpDto, SignInDto } from './dto';
 import { Public } from '../common/decorators';
+import { UserResponseDto } from '../common/dto';
+import { ResponseMapper } from '../common/mappers/response.mapper';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -18,22 +20,18 @@ export class AuthController {
     description: 'User successfully registered',
     schema: {
       properties: {
-        user: {
-          type: 'object',
-          properties: {
-            id: { type: 'string' },
-            email: { type: 'string' },
-            firstName: { type: 'string' },
-            lastName: { type: 'string' },
-          },
-        },
-        accessToken: { type: 'string' },
+        user: { $ref: '#/components/schemas/UserResponseDto' },
+        accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
       },
     },
   })
   @ApiResponse({ status: 400, description: 'Invalid input or email already exists' })
   async signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
+    const result = await this.authService.signUp(signUpDto);
+    return {
+      user: ResponseMapper.toUserResponse(result.user),
+      accessToken: result.accessToken,
+    };
   }
 
   @Public()
@@ -46,22 +44,18 @@ export class AuthController {
     description: 'Successfully authenticated',
     schema: {
       properties: {
-        user: {
-          type: 'object',
-          properties: {
-            id: { type: 'string' },
-            email: { type: 'string' },
-            firstName: { type: 'string' },
-            lastName: { type: 'string' },
-          },
-        },
-        accessToken: { type: 'string' },
+        user: { $ref: '#/components/schemas/UserResponseDto' },
+        accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
       },
     },
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto);
+    const result = await this.authService.signIn(signInDto);
+    return {
+      user: ResponseMapper.toUserResponse(result.user),
+      accessToken: result.accessToken,
+    };
   }
 }
 

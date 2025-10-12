@@ -6,7 +6,7 @@ export const getJwtConfig = (
 ): JwtModuleOptions => ({
   secret: configService.get<string>('JWT_SECRET') || 'default-secret',
   signOptions: {
-    expiresIn: configService.get<string>('JWT_EXPIRES_IN', '7d'),
+    expiresIn: '7d',
   },
 });
 
