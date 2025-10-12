@@ -10,9 +10,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { TripsService } from './trips.service';
-import { CreateTripDto } from './dto/create-trip.dto';
-import { UpdateTripStatusDto } from './dto/update-trip-status.dto';
-import { SearchTripsDto } from './dto/search-trips.dto';
+import { CreateTripDto, UpdateTripStatusDto, SearchTripsDto } from './dto';
 import { JwtAuthGuard, CurrentUser } from '../common';
 import { User } from '../entities/user.entity';
 
