@@ -9,11 +9,14 @@ import {
   UseGuards,
   Delete,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { TripsService } from './trips.service';
 import { CreateTripDto, UpdateTripStatusDto, SearchTripsDto } from './dto';
 import { JwtAuthGuard, CurrentUser } from '../common';
 import { User } from '../entities/user.entity';
 
+@ApiTags('trips')
+@ApiBearerAuth('JWT-auth')
 @Controller('trips')
 @UseGuards(JwtAuthGuard)
 export class TripsController {

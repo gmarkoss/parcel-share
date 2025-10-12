@@ -9,6 +9,7 @@ import {
   UseGuards,
   Delete,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ParcelsService } from './parcels.service';
 import { CreateParcelDto } from './dto/create-parcel.dto';
 import { UpdateParcelStatusDto } from './dto/update-parcel-status.dto';
@@ -17,6 +18,8 @@ import { AcceptParcelDto } from './dto/accept-parcel.dto';
 import { JwtAuthGuard, CurrentUser } from '../common';
 import { User } from '../entities/user.entity';
 
+@ApiTags('parcels')
+@ApiBearerAuth('JWT-auth')
 @Controller('parcels')
 @UseGuards(JwtAuthGuard)
 export class ParcelsController {
