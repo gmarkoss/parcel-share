@@ -9,20 +9,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Trip } from './trip.entity';
-
-export enum ParcelStatus {
-  REQUESTED = 'requested',
-  ACCEPTED = 'accepted',
-  IN_TRANSIT = 'in_transit',
-  DELIVERED = 'delivered',
-  CANCELLED = 'cancelled',
-}
-
-export enum ParcelSize {
-  SMALL = 'small', // fits in bag
-  MEDIUM = 'medium', // small box
-  LARGE = 'large', // large box
-}
+import { ParcelStatus, ParcelSize } from '../common/enums';
 
 @Entity('parcels')
 export class Parcel {

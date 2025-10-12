@@ -12,17 +12,17 @@ import {
 } from '../dto';
 
 export class ResponseMapper {
-  static toUserResponse(user: User): UserResponseDto {
+  static toUserResponse(user: User | any): UserResponseDto {
     return {
       id: user.id,
       email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phoneNumber: user.phoneNumber,
-      profilePicture: user.profilePicture,
-      bio: user.bio,
-      rating: user.rating,
-      isVerified: user.isVerified,
+      firstName: user.name?.split(' ')[0] || user.name, // Map name to firstName
+      lastName: user.name?.split(' ').slice(1).join(' ') || '', // Map name to lastName
+      phoneNumber: user.phone, // Map phone to phoneNumber
+      profilePicture: user.photoUrl, // Map photoUrl to profilePicture
+      bio: undefined, // Not in entity yet
+      rating: undefined, // Not in entity yet
+      isVerified: user.isActive, // Map isActive to isVerified
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

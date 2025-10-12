@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Parcel, ParcelStatus } from '../entities/parcel.entity';
-import { Trip, TripStatus } from '../entities/trip.entity';
+import { Parcel } from '../entities/parcel.entity';
+import { Trip } from '../entities/trip.entity';
+import { ParcelStatus, TripStatus } from '../common/enums';
 
 export interface MatchResult {
   trip: Trip;

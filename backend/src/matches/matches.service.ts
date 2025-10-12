@@ -5,10 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Match, MatchStatus } from '../entities/match.entity';
+import { Match } from '../entities/match.entity';
 import { Parcel } from '../entities/parcel.entity';
 import { Trip } from '../entities/trip.entity';
 import { User } from '../entities/user.entity';
+import { MatchStatus } from '../common/enums';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchStatusDto } from './dto/update-match-status.dto';
 

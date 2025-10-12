@@ -1,6 +1,6 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { MatchStatus } from '../../entities/match.entity';
+import { MatchStatus } from '../../common/enums';
 
 export class UpdateMatchStatusDto {
   @ApiProperty({ 

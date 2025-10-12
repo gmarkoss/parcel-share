@@ -9,14 +9,7 @@ import {
 import { Parcel } from './parcel.entity';
 import { Trip } from './trip.entity';
 import { User } from './user.entity';
-
-export enum MatchStatus {
-  PENDING = 'pending',
-  ACCEPTED = 'accepted',
-  REJECTED = 'rejected',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-}
+import { MatchStatus } from '../common/enums';
 
 @Entity('matches')
 export class Match {

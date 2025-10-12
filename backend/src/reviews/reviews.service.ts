@@ -6,9 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Review, ReviewType } from '../entities/review.entity';
-import { Match, MatchStatus } from '../entities/match.entity';
+import { Review } from '../entities/review.entity';
+import { Match } from '../entities/match.entity';
 import { User } from '../entities/user.entity';
+import { ReviewType, MatchStatus } from '../common/enums';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 
@@ -128,7 +129,7 @@ export class ReviewsService {
     });
   }
 
-  async findOne(id: string): Promise<Review> {
+  async findOne(id: string, currentUserId: string): Promise<Review> {
     const review = await this.reviewRepository.findOne({
       where: { id },
     });
@@ -137,18 +138,27 @@ export class ReviewsService {
       throw new NotFoundException(`Review with ID ${id} not found`);
     }
 
+    // Only reviewer can view their own review (or make this public if needed)
+    if (review.reviewerId !== currentUserId && review.revieweeId !== currentUserId) {
+      throw new ForbiddenException('You can only view reviews you are part of');
+    }
+
     return review;
   }
 
   async update(
     id: string,
     updateReviewDto: UpdateReviewDto,
-    currentUser: User,
+    currentUserId: string,
   ): Promise<Review> {
-    const review = await this.findOne(id);
+    const review = await this.reviewRepository.findOne({ where: { id } });
+
+    if (!review) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
 
     // Only reviewer can update their own review
-    if (review.reviewerId !== currentUser.id) {
+    if (review.reviewerId !== currentUserId) {
       throw new ForbiddenException('You can only update your own reviews');
     }
 
@@ -157,26 +167,40 @@ export class ReviewsService {
     return await this.reviewRepository.save(review);
   }
 
-  async remove(id: string, currentUser: User): Promise<void> {
-    const review = await this.findOne(id);
+  async remove(id: string, currentUserId: string): Promise<void> {
+    const review = await this.reviewRepository.findOne({ where: { id } });
+
+    if (!review) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
 
     // Only reviewer can delete their own review
-    if (review.reviewerId !== currentUser.id) {
+    if (review.reviewerId !== currentUserId) {
       throw new ForbiddenException('You can only delete your own reviews');
     }
 
     await this.reviewRepository.remove(review);
   }
 
-  async getAverageRating(userId: string): Promise<number> {
+  async getAverageRating(userId: string): Promise<{ userId: string; averageRating: number; totalReviews: number }> {
     const reviews = await this.findByUser(userId);
 
     if (reviews.length === 0) {
-      return 0;
+      return {
+        userId,
+        averageRating: 0,
+        totalReviews: 0,
+      };
     }
 
     const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / reviews.length) * 10) / 10; // Round to 1 decimal
+    const averageRating = Math.round((sum / reviews.length) * 10) / 10; // Round to 1 decimal
+    
+    return {
+      userId,
+      averageRating,
+      totalReviews: reviews.length,
+    };
   }
 }
 

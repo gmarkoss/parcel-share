@@ -6,7 +6,7 @@ import {
   IsDateString,
   Min,
 } from 'class-validator';
-import { TransportType } from '../../entities/trip.entity';
+import { TransportType } from '../../common/enums';
 
 export class CreateTripDto {
   @IsString()

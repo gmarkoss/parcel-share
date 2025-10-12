@@ -1,5 +1,5 @@
 import { IsOptional, IsEnum, IsDateString } from 'class-validator';
-import { ParcelStatus, ParcelSize } from '../../entities/parcel.entity';
+import { ParcelStatus, ParcelSize } from '../../common/enums';
 
 export class SearchParcelsDto {
   @IsOptional()

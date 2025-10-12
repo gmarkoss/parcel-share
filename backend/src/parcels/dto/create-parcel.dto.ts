@@ -6,7 +6,7 @@ import {
   IsDateString,
   Min,
 } from 'class-validator';
-import { ParcelSize } from '../../entities/parcel.entity';
+import { ParcelSize } from '../../common/enums';
 
 export class CreateParcelDto {
   @IsString()

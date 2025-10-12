@@ -30,7 +30,7 @@ export class AuthController {
     const result = await this.authService.signUp(signUpDto);
     return {
       user: ResponseMapper.toUserResponse(result.user),
-      accessToken: result.accessToken,
+      accessToken: result.token,
     };
   }
 
@@ -54,7 +54,7 @@ export class AuthController {
     const result = await this.authService.signIn(signInDto);
     return {
       user: ResponseMapper.toUserResponse(result.user),
-      accessToken: result.accessToken,
+      accessToken: result.token,
     };
   }
 }

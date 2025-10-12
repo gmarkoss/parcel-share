@@ -10,19 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Parcel } from './parcel.entity';
-
-export enum TransportType {
-  CAR = 'car',
-  BUS = 'bus',
-  TRAIN = 'train',
-}
-
-export enum TripStatus {
-  PLANNED = 'planned',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-}
+import { TransportType, TripStatus } from '../common/enums';
 
 @Entity('trips')
 export class Trip {

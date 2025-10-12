@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from './user-response.dto';
-import { ReviewType } from '../../entities/review.entity';
+import { ReviewType } from '../enums';
 
 export class ReviewResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Review ID' })

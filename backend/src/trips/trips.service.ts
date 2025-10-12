@@ -6,7 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Trip, TripStatus } from '../entities/trip.entity';
+import { Trip } from '../entities/trip.entity';
+import { TripStatus } from '../common/enums';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripStatusDto } from './dto/update-trip-status.dto';
 import { SearchTripsDto } from './dto/search-trips.dto';

@@ -8,11 +8,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Match } from './match.entity';
-
-export enum ReviewType {
-  SENDER_TO_TRAVELER = 'sender_to_traveler',
-  TRAVELER_TO_SENDER = 'traveler_to_sender',
-}
+import { ReviewType } from '../common/enums';
 
 @Entity('reviews')
 export class Review {

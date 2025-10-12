@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from './user-response.dto';
 import { ParcelResponseDto } from './parcel-response.dto';
 import { TripResponseDto } from './trip-response.dto';
-import { MatchStatus } from '../../entities/match.entity';
+import { MatchStatus } from '../enums';
 
 export class MatchResponseDto {
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Match ID' })
