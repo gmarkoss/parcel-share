@@ -6,7 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Parcel, ParcelStatus } from '../entities/parcel.entity';
+import { Parcel } from '../entities/parcel.entity';
+import { ParcelStatus } from '../common/enums';
 import { CreateParcelDto } from './dto/create-parcel.dto';
 import { UpdateParcelStatusDto } from './dto/update-parcel-status.dto';
 import { SearchParcelsDto } from './dto/search-parcels.dto';
