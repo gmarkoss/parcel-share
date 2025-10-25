@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: parcel-share-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm ci && npm run build
+    startCommand: cd backend && npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+    database:
+      postgresql:
+        name: parcel-share-db
+        plan: free
+        databaseName: parcel_sharing
+        envVar: DATABASE_URL
+
