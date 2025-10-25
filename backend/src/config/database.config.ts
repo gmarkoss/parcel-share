@@ -17,7 +17,7 @@ export const getDatabaseConfig = (
   password: configService.get<string>('DB_PASSWORD', 'postgres'),
   database: configService.get<string>('DB_DATABASE', 'parcel_sharing'),
   entities: [User, Parcel, Trip, Notification, Match, Review],
-  synchronize: configService.get<string>('NODE_ENV') === 'development',
+  synchronize: true, // Temporarily enabled for Railway deployment
   logging: configService.get<string>('NODE_ENV') === 'development',
   ssl:
     configService.get<string>('NODE_ENV') === 'production'
