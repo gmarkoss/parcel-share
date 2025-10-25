@@ -408,3 +408,4 @@ Database (Managed PostgreSQL):
 
 This architecture is designed to be simple for MVP while allowing for future growth and scalability.
 
+

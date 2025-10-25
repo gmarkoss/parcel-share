@@ -23,8 +23,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production
+# Install all dependencies (including dev dependencies for development)
+RUN npm ci
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
@@ -34,4 +34,5 @@ EXPOSE 3001
 
 # Start the application
 CMD ["node", "dist/main.js"]
+
 

@@ -5,3 +5,4 @@ export class AcceptParcelDto {
   tripId: string;
 }
 
+
