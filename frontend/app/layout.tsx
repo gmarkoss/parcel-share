@@ -7,8 +7,8 @@ import Navbar from '@/components/Navbar';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'parcely - Peer-to-Peer Parcel Delivery',
-  description: 'Share parcels with travelers heading your way',
+  title: 'Parcely - Ship smarter, together',
+  description: 'Connect people who want to send small parcels with travelers already heading that way. Save money, reduce carbon footprint, and help your community.',
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 };
 

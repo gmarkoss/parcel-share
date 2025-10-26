@@ -5,8 +5,11 @@ export default function Home() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 md:mb-6">
-          Welcome to parcely
+          Welcome to Parcely
         </h1>
+        <p className="text-lg md:text-xl lg:text-2xl font-semibold text-sky-600 mb-4 md:mb-6">
+          Ship smarter, together
+        </p>
         <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
           Connect people who want to send small parcels with travelers already heading that way.
           Save money, reduce carbon footprint, and help your community.

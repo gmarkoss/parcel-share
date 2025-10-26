@@ -64,7 +64,7 @@ async function bootstrap() {
 
   // Swagger/OpenAPI documentation setup
   const config = new DocumentBuilder()
-    .setTitle('parcely API')
+    .setTitle('Parcely API')
     .setDescription(
       'RESTful API for a peer-to-peer parcel delivery platform connecting travelers with senders',
     )
@@ -100,7 +100,7 @@ async function bootstrap() {
            ],
          });
          SwaggerModule.setup('api/docs', app, document, {
-           customSiteTitle: 'parcely API Docs',
+           customSiteTitle: 'Parcely API Docs',
            customfavIcon: 'https://nestjs.com/img/logo_text.svg',
            customCss: '.swagger-ui .topbar { display: none }',
          });

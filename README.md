@@ -1,4 +1,6 @@
-# 📦 parcely - Peer-to-Peer Parcel Delivery Platform MVP
+# 📦 Parcely - Peer-to-Peer Parcel Delivery Platform MVP
+
+**Ship smarter, together**
 
 A modern web platform connecting people who want to send small parcels with travelers already heading that way. Built with NestJS, Next.js, PostgreSQL, and TypeScript.
 
