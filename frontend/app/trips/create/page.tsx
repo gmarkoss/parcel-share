@@ -156,12 +156,12 @@ export default function CreateTrip() {
             <button
               type="button"
               onClick={swapLocations}
-              className="absolute left-1/2 -translate-x-1/2 -bottom-2 md:-bottom-4 bg-white border-2 border-green-400 rounded-full p-2 shadow-lg hover:bg-green-50 hover:border-green-600 transition-all duration-200 z-10"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border-2 border-green-400 rounded-full p-2 shadow-lg hover:bg-green-50 hover:border-green-600 transition-all duration-200 z-10"
               title="Swap locations"
               aria-label="Swap from and destination locations"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
               </svg>
             </button>
           </div>
