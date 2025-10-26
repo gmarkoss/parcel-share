@@ -1,4 +1,4 @@
-# 📦 ParcelShare - Peer-to-Peer Parcel Delivery Platform MVP
+# 📦 parcely - Peer-to-Peer Parcel Delivery Platform MVP
 
 A modern web platform connecting people who want to send small parcels with travelers already heading that way. Built with NestJS, Next.js, PostgreSQL, and TypeScript.
 
@@ -465,6 +465,6 @@ Built with modern web technologies and best practices for MVP development.
 
 ---
 
-**Happy ParcelSharing! 📦🚗🤝**
+**Happy parceling! 📦🚗🤝**
 
 
