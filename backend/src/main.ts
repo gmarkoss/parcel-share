@@ -18,7 +18,9 @@ async function bootstrap() {
   // Enable CORS for frontend
   const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:3001',
     'http://localhost:3002',
+    'http://localhost:3004',
     'https://parcel-share-production.up.railway.app',
     'https://parcel-share-qpbt-ctko5fefx-markos-projects-5a4df66f.vercel.app',
     ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
