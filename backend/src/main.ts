@@ -15,19 +15,38 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // Enable CORS for frontend
+  // Enable CORS for frontend with dynamic origin checking
   const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:3002',
     'http://localhost:3004',
     'https://parcel-share-production.up.railway.app',
-    'https://parcel-share-qpbt-ctko5fefx-markos-projects-5a4df66f.vercel.app',
     ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
   ];
-  
+
   app.enableCors({
-    origin: allowedOrigins,
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Check if origin is in the allowed list
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Check if origin matches Vercel pattern (any *.vercel.app domain)
+      if (/^https:\/\/parcel-share-[a-z0-9]+-.*\.vercel\.app$/.test(origin)) {
+        return callback(null, true);
+      }
+
+      // For production, you might want to add your main domain here
+      if (origin === process.env.PRODUCTION_URL) {
+        return callback(null, true);
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   });
 
