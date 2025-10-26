@@ -16,7 +16,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && !user && !localStorage.getItem('token')) {
+    if (!authLoading && !user) {
       router.push('/auth/signin');
     } else if (user) {
       fetchData();
