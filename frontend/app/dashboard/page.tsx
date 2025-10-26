@@ -16,12 +16,10 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user && !localStorage.getItem('token')) {
-        router.push('/auth/signin');
-      } else if (user) {
-        fetchData();
-      }
+    if (!authLoading && !user && !localStorage.getItem('token')) {
+      router.push('/auth/signin');
+    } else if (user) {
+      fetchData();
     }
   }, [user, authLoading, router]);
 
