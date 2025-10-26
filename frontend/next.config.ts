@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  // Improve hot reload reliability
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
+  reactStrictMode: true,
+  // Improved dev server stability
+  experimental: {
+    // Reduce memory issues in dev
+    optimizePackageImports: ['@/components', '@/lib'],
+  },
 };
 
 export default nextConfig;
