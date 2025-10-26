@@ -47,42 +47,42 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">Dashboard</h1>
 
       {/* Quick Actions */}
-      <div className="grid md:grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <Link
           href="/parcels/create"
-          className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-lg text-center"
+          className="bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-6 rounded-lg text-center"
         >
-          <div className="text-3xl mb-2">📦</div>
-          <h3 className="text-xl font-semibold">Send a Parcel</h3>
-          <p className="text-sm mt-1 opacity-90">Request delivery for your item</p>
+          <div className="text-2xl sm:text-3xl mb-2">📦</div>
+          <h3 className="text-lg sm:text-xl font-semibold">Send a Parcel</h3>
+          <p className="text-xs sm:text-sm mt-1 opacity-90">Request delivery for your item</p>
         </Link>
         <Link
           href="/trips/create"
-          className="bg-green-600 hover:bg-green-700 text-white p-6 rounded-lg text-center"
+          className="bg-green-600 hover:bg-green-700 text-white p-4 sm:p-6 rounded-lg text-center"
         >
-          <div className="text-3xl mb-2">🚗</div>
-          <h3 className="text-xl font-semibold">Offer a Trip</h3>
-          <p className="text-sm mt-1 opacity-90">Earn by carrying parcels</p>
+          <div className="text-2xl sm:text-3xl mb-2">🚗</div>
+          <h3 className="text-lg sm:text-xl font-semibold">Offer a Trip</h3>
+          <p className="text-xs sm:text-sm mt-1 opacity-90">Earn by carrying parcels</p>
         </Link>
       </div>
 
       {/* My Parcels */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">My Parcels</h2>
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">My Parcels</h2>
         {parcels.length === 0 ? (
-          <div className="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md text-center text-sm sm:text-base text-gray-500">
             No parcels yet. Create your first parcel request!
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {parcels.map((parcel) => (
-              <div key={parcel.id} className="bg-white p-6 rounded-lg shadow-md">
-                <div className="flex justify-between items-start mb-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              <div key={parcel.id} className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
+                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                     parcel.status === 'requested' ? 'bg-yellow-100 text-yellow-800' :
                     parcel.status === 'accepted' ? 'bg-green-100 text-green-800' :
                     parcel.status === 'in_transit' ? 'bg-blue-100 text-blue-800' :
@@ -91,22 +91,22 @@ export default function Dashboard() {
                   }`}>
                     {parcel.status.replace('_', ' ').toUpperCase()}
                   </span>
-                  <span className="text-sm text-gray-500">{parcel.size}</span>
+                  <span className="text-xs sm:text-sm text-gray-500">{parcel.size}</span>
                 </div>
-                <h3 className="font-semibold mb-2">
+                <h3 className="font-semibold mb-2 text-sm sm:text-base">
                   {parcel.fromLocation} → {parcel.toLocation}
                 </h3>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-xs sm:text-sm text-gray-600 mb-2">
                   Pickup: {format(new Date(parcel.desiredPickupDate), 'MMM d, yyyy')}
                 </p>
                 {parcel.rewardAmount && (
-                  <p className="text-sm font-semibold text-green-600">
+                  <p className="text-xs sm:text-sm font-semibold text-green-600">
                     Reward: €{parcel.rewardAmount}
                   </p>
                 )}
                 <Link
                   href={`/parcels/${parcel.id}`}
-                  className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2 inline-block"
+                  className="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium mt-2 inline-block"
                 >
                   View Details →
                 </Link>
@@ -118,17 +118,17 @@ export default function Dashboard() {
 
       {/* My Trips */}
       <div>
-        <h2 className="text-2xl font-bold mb-4">My Trips</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">My Trips</h2>
         {trips.length === 0 ? (
-          <div className="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md text-center text-sm sm:text-base text-gray-500">
             No trips yet. Offer your first trip!
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {trips.map((trip) => (
-              <div key={trip.id} className="bg-white p-6 rounded-lg shadow-md">
-                <div className="flex justify-between items-start mb-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              <div key={trip.id} className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
+                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                     trip.status === 'planned' ? 'bg-blue-100 text-blue-800' :
                     trip.status === 'in_progress' ? 'bg-green-100 text-green-800' :
                     trip.status === 'completed' ? 'bg-gray-100 text-gray-800' :
@@ -136,20 +136,20 @@ export default function Dashboard() {
                   }`}>
                     {trip.status.replace('_', ' ').toUpperCase()}
                   </span>
-                  <span className="text-sm text-gray-500">{trip.transportType}</span>
+                  <span className="text-xs sm:text-sm text-gray-500">{trip.transportType}</span>
                 </div>
-                <h3 className="font-semibold mb-2">
+                <h3 className="font-semibold mb-2 text-sm sm:text-base">
                   {trip.fromLocation} → {trip.toLocation}
                 </h3>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-xs sm:text-sm text-gray-600 mb-2">
                   Departure: {format(new Date(trip.departureTime), 'MMM d, yyyy HH:mm')}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600">
                   Capacity: {trip.availableCapacity} parcels
                 </p>
                 <Link
                   href={`/trips/${trip.id}`}
-                  className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2 inline-block"
+                  className="text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium mt-2 inline-block"
                 >
                   View Details →
                 </Link>
