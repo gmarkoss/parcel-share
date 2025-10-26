@@ -35,8 +35,8 @@ async function bootstrap() {
         return callback(null, true);
       }
 
-      // Check if origin matches Vercel pattern (any *.vercel.app domain)
-      if (/^https:\/\/parcel-share-[a-z0-9]+-.*\.vercel\.app$/.test(origin)) {
+      // Check if origin matches Vercel pattern (short: parcel-share-*.vercel.app or long preview)
+      if (/^https:\/\/parcel-share-[a-z0-9]+(-[a-z0-9-]+)?\.vercel\.app$/.test(origin)) {
         return callback(null, true);
       }
 
