@@ -54,11 +54,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { token: newToken, user: newUser } = response.data;
       
       localStorage.setItem('token', newToken);
+      
       setToken(newToken);
       setUser(newUser);
       setIsLoading(false);
-      // Wait for React to process state updates and next render
-      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Give React time to update context before navigation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       router.push('/dashboard');
     } catch (error) {
       console.error('Signin error:', error);
@@ -72,11 +75,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { token: newToken, user: newUser } = response.data;
       
       localStorage.setItem('token', newToken);
+      
+      // Batch state updates
       setToken(newToken);
       setUser(newUser);
       setIsLoading(false);
-      // Wait for React to process state updates and next render
-      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Give React time to update context before navigation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       router.push('/dashboard');
     } catch (error) {
       console.error('Signup error:', error);

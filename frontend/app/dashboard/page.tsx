@@ -16,14 +16,12 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      // Small delay to allow auth context to fully initialize
-      const timer = setTimeout(() => {
+    if (!authLoading) {
+      if (!user && !localStorage.getItem('token')) {
         router.push('/auth/signin');
-      }, 100);
-      return () => clearTimeout(timer);
-    } else if (user) {
-      fetchData();
+      } else if (user) {
+        fetchData();
+      }
     }
   }, [user, authLoading, router]);
 
