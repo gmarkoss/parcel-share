@@ -47,23 +47,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    const response = await api.post('/auth/signin', { email, password });
-    const { token: newToken, user: newUser } = response.data;
-    
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
-    setUser(newUser);
-    router.push('/dashboard');
+    try {
+      const response = await api.post('/auth/signin', { email, password });
+      const { token: newToken, user: newUser } = response.data;
+      
+      localStorage.setItem('token', newToken);
+      setToken(newToken);
+      setUser(newUser);
+      setIsLoading(false);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Signin error:', error);
+      throw error;
+    }
   };
 
   const signUp = async (email: string, password: string, name: string, phone?: string) => {
-    const response = await api.post('/auth/signup', { email, password, name, phone });
-    const { token: newToken, user: newUser } = response.data;
-    
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
-    setUser(newUser);
-    router.push('/dashboard');
+    try {
+      const response = await api.post('/auth/signup', { email, password, name, phone });
+      const { token: newToken, user: newUser } = response.data;
+      
+      localStorage.setItem('token', newToken);
+      setToken(newToken);
+      setUser(newUser);
+      setIsLoading(false);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Signup error:', error);
+      throw error;
+    }
   };
 
   const signOut = () => {
