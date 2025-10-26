@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { User } from '@/lib/types';
@@ -22,8 +22,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  const fetchUserProfile = useCallback(async () => {
+    try {
+      const response = await api.get('/users/profile');
+      setUser(response.data);
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error);
+      localStorage.removeItem('token');
+      setToken(null);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    // Check for existing token
+    // Check for existing token on mount
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
@@ -31,22 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       setIsLoading(false);
     }
-  }, []);
-
-  const fetchUserProfile = async () => {
-    try {
-      console.log('Fetching user profile...');
-      const response = await api.get('/users/profile');
-      console.log('User profile response:', response.data);
-      setUser(response.data);
-    } catch (error) {
-      console.error('Failed to fetch user profile:', error);
-      localStorage.removeItem('token');
-      setToken(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [fetchUserProfile]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -54,13 +53,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { accessToken: newToken, user: newUser } = response.data;
       
       localStorage.setItem('token', newToken);
-      
       setToken(newToken);
       setUser(newUser);
       setIsLoading(false);
-      
-      // Give React time to update context before navigation
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
       router.push('/dashboard');
     } catch (error) {
@@ -75,14 +70,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { accessToken: newToken, user: newUser } = response.data;
       
       localStorage.setItem('token', newToken);
-      
-      // Batch state updates
       setToken(newToken);
       setUser(newUser);
       setIsLoading(false);
-      
-      // Give React time to update context before navigation
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
       router.push('/dashboard');
     } catch (error) {
