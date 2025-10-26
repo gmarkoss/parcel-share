@@ -54,13 +54,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { token: newToken, user: newUser } = response.data;
       
       localStorage.setItem('token', newToken);
-      
       setToken(newToken);
       setUser(newUser);
       setIsLoading(false);
-      
-      // Give React time to update context before navigation
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
       router.push('/dashboard');
     } catch (error) {
@@ -75,14 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { token: newToken, user: newUser } = response.data;
       
       localStorage.setItem('token', newToken);
-      
-      // Batch state updates
       setToken(newToken);
       setUser(newUser);
       setIsLoading(false);
-      
-      // Give React time to update context before navigation
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
       router.push('/dashboard');
     } catch (error) {
