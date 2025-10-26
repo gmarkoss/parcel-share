@@ -21,6 +21,8 @@ export default function CreateTrip() {
     fromLng: 0,
     toLat: 0,
     toLng: 0,
+    fromFullAddress: '',
+    toFullAddress: '',
     transportType: TransportType.CAR,
     departureTime: '',
     arrivalTime: '',
@@ -63,6 +65,20 @@ export default function CreateTrip() {
       setDistance(null);
     }
   }, [formData.fromLat, formData.fromLng, formData.toLat, formData.toLng, calculateDistance]);
+
+  const swapLocations = () => {
+    setFormData({
+      ...formData,
+      fromLocation: formData.toLocation,
+      toLocation: formData.fromLocation,
+      fromLat: formData.toLat,
+      fromLng: formData.toLng,
+      toLat: formData.fromLat,
+      toLng: formData.fromLng,
+      fromFullAddress: formData.toFullAddress,
+      toFullAddress: formData.fromFullAddress,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,28 +125,45 @@ export default function CreateTrip() {
             <h2 className="text-lg font-bold text-green-900">Route</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <LocationAutocomplete
-              label="From Location"
-              value={formData.fromLocation}
-              onChange={(value) => setFormData({ ...formData, fromLocation: value })}
-              onLocationSelect={(location, lat, lng) => 
-                setFormData({ ...formData, fromLocation: location, fromLat: lat, fromLng: lng })
-              }
-              placeholder="Where are you starting?"
-              required
-            />
+          <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <LocationAutocomplete
+                label="From Location"
+                value={formData.fromLocation}
+                onChange={(value) => setFormData({ ...formData, fromLocation: value })}
+                onLocationSelect={(location, lat, lng, fullAddress) => 
+                  setFormData({ ...formData, fromLocation: location, fromLat: lat, fromLng: lng, fromFullAddress: fullAddress || '' })
+                }
+                placeholder="Where are you starting?"
+                required
+                fullAddress={formData.fromFullAddress}
+              />
 
-            <LocationAutocomplete
-              label="Destination"
-              value={formData.toLocation}
-              onChange={(value) => setFormData({ ...formData, toLocation: value })}
-              onLocationSelect={(location, lat, lng) => 
-                setFormData({ ...formData, toLocation: location, toLat: lat, toLng: lng })
-              }
-              placeholder="Where are you heading?"
-              required
-            />
+              <LocationAutocomplete
+                label="Destination"
+                value={formData.toLocation}
+                onChange={(value) => setFormData({ ...formData, toLocation: value })}
+                onLocationSelect={(location, lat, lng, fullAddress) => 
+                  setFormData({ ...formData, toLocation: location, toLat: lat, toLng: lng, toFullAddress: fullAddress || '' })
+                }
+                placeholder="Where are you heading?"
+                required
+                fullAddress={formData.toFullAddress}
+              />
+            </div>
+
+            {/* Swap Button */}
+            <button
+              type="button"
+              onClick={swapLocations}
+              className="absolute left-1/2 -translate-x-1/2 -bottom-2 md:-bottom-4 bg-white border-2 border-green-400 rounded-full p-2 shadow-lg hover:bg-green-50 hover:border-green-600 transition-all duration-200 z-10"
+              title="Swap locations"
+              aria-label="Swap from and destination locations"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+            </button>
           </div>
 
           {/* Route Preview */}

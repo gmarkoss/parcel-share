@@ -21,7 +21,10 @@ export default function CreateParcel() {
     fromLng: 0,
     toLat: 0,
     toLng: 0,
+    fromFullAddress: '',
+    toFullAddress: '',
     size: ParcelSize.SMALL,
+    weight: '',
     description: '',
     rewardAmount: '',
     desiredPickupDate: '',
@@ -29,6 +32,7 @@ export default function CreateParcel() {
   });
 
   const [distance, setDistance] = useState<number | null>(null);
+  const [suggestedReward, setSuggestedReward] = useState<number | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -49,20 +53,61 @@ export default function CreateParcel() {
     return Math.round(R * c);
   }, []);
 
-  // Calculate distance between two coordinates
+  // Calculate distance and suggested reward
   useEffect(() => {
     if (formData.fromLat && formData.fromLng && formData.toLat && formData.toLng) {
-      const distance = calculateDistance(
+      const calculatedDistance = calculateDistance(
         formData.fromLat,
         formData.fromLng,
         formData.toLat,
         formData.toLng
       );
-      setDistance(distance);
+      setDistance(calculatedDistance);
+      
+      // Calculate suggested reward based on distance, size, and weight
+      const ratePerKm = 0.02; // 10 EUR / 500km base rate
+      let baseReward = calculatedDistance * ratePerKm;
+      
+      // Size multipliers
+      const sizeMultipliers = {
+        [ParcelSize.SMALL]: 1.0,
+        [ParcelSize.MEDIUM]: 1.5,
+        [ParcelSize.LARGE]: 2.0,
+      };
+      const sizeMultiplier = sizeMultipliers[formData.size] || 1.0;
+      baseReward *= sizeMultiplier;
+      
+      // Weight adjustment: +0.25 EUR per kg above 1kg
+      if (formData.weight) {
+        const weightKg = parseFloat(formData.weight);
+        if (weightKg > 1) {
+          const weightAdjustment = (weightKg - 1) * 0.5; // €0.50 per kg above 1kg
+          baseReward += weightAdjustment;
+        }
+      }
+      
+      const minReward = 5;
+      const rounded = Math.max(minReward, Math.round(baseReward * 4) / 4); // Round to nearest 0.25
+      setSuggestedReward(rounded);
     } else {
       setDistance(null);
+      setSuggestedReward(null);
     }
-  }, [formData.fromLat, formData.fromLng, formData.toLat, formData.toLng, calculateDistance]);
+  }, [formData.fromLat, formData.fromLng, formData.toLat, formData.toLng, formData.size, formData.weight, calculateDistance]);
+
+  const swapLocations = () => {
+    setFormData({
+      ...formData,
+      fromLocation: formData.toLocation,
+      toLocation: formData.fromLocation,
+      fromLat: formData.toLat,
+      fromLng: formData.toLng,
+      toLat: formData.fromLat,
+      toLng: formData.fromLng,
+      fromFullAddress: formData.toFullAddress,
+      toFullAddress: formData.fromFullAddress,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,9 +122,11 @@ export default function CreateParcel() {
     setIsLoading(true);
 
     try {
+      const { fromFullAddress, toFullAddress, ...restFormData } = formData;
       const payload = {
-        ...formData,
+        ...restFormData,
         rewardAmount: formData.rewardAmount ? parseFloat(formData.rewardAmount) : undefined,
+        weight: formData.weight ? parseFloat(formData.weight) : undefined,
       };
       await api.post('/parcels', payload);
       router.push('/dashboard');
@@ -113,28 +160,45 @@ export default function CreateParcel() {
             <h2 className="text-lg font-bold text-blue-900">Route</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <LocationAutocomplete
-              label="Pickup Location"
-              value={formData.fromLocation}
-              onChange={(value) => setFormData({ ...formData, fromLocation: value })}
-              onLocationSelect={(location, lat, lng) => 
-                setFormData({ ...formData, fromLocation: location, fromLat: lat, fromLng: lng })
-              }
-              placeholder="From where?"
-              required
-            />
+          <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <LocationAutocomplete
+                label="Pickup Location"
+                value={formData.fromLocation}
+                onChange={(value) => setFormData({ ...formData, fromLocation: value })}
+                onLocationSelect={(location, lat, lng, fullAddress) => 
+                  setFormData({ ...formData, fromLocation: location, fromLat: lat, fromLng: lng, fromFullAddress: fullAddress || '' })
+                }
+                placeholder="From where?"
+                required
+                fullAddress={formData.fromFullAddress}
+              />
 
-            <LocationAutocomplete
-              label="Delivery Location"
-              value={formData.toLocation}
-              onChange={(value) => setFormData({ ...formData, toLocation: value })}
-              onLocationSelect={(location, lat, lng) => 
-                setFormData({ ...formData, toLocation: location, toLat: lat, toLng: lng })
-              }
-              placeholder="Where to?"
-              required
-            />
+              <LocationAutocomplete
+                label="Delivery Location"
+                value={formData.toLocation}
+                onChange={(value) => setFormData({ ...formData, toLocation: value })}
+                onLocationSelect={(location, lat, lng, fullAddress) => 
+                  setFormData({ ...formData, toLocation: location, toLat: lat, toLng: lng, toFullAddress: fullAddress || '' })
+                }
+                placeholder="Where to?"
+                required
+                fullAddress={formData.toFullAddress}
+              />
+            </div>
+
+            {/* Swap Button */}
+            <button
+              type="button"
+              onClick={swapLocations}
+              className="absolute left-1/2 -translate-x-1/2 -bottom-2 md:-bottom-4 bg-white border-2 border-blue-400 rounded-full p-2 shadow-lg hover:bg-blue-50 hover:border-blue-600 transition-all duration-200 z-10"
+              title="Swap locations"
+              aria-label="Swap pickup and delivery locations"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+            </button>
           </div>
 
           {/* Route Preview */}
@@ -181,20 +245,38 @@ export default function CreateParcel() {
           </div>
 
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Parcel Size *
-              </label>
-              <select
-                value={formData.size}
-                onChange={(e) => setFormData({ ...formData, size: e.target.value as ParcelSize })}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value={ParcelSize.SMALL}>📱 Small (fits in bag)</option>
-                <option value={ParcelSize.MEDIUM}>📦 Medium (small box)</option>
-                <option value={ParcelSize.LARGE}>📦📦 Large (large box)</option>
-              </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Parcel Size *
+                </label>
+                <select
+                  value={formData.size}
+                  onChange={(e) => setFormData({ ...formData, size: e.target.value as ParcelSize })}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value={ParcelSize.SMALL}>📱 Small (fits in bag)</option>
+                  <option value={ParcelSize.MEDIUM}>📦 Medium (small box)</option>
+                  <option value={ParcelSize.LARGE}>📦📦 Large (large box)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  value={formData.weight}
+                  onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., 2.5"
+                />
+                <p className="text-xs text-gray-500 mt-1">Optional: Approximate weight in kilograms</p>
+              </div>
             </div>
 
             <div>
@@ -217,14 +299,28 @@ export default function CreateParcel() {
               </label>
               <input
                 type="number"
-                step="0.01"
+                step="0.25"
                 min="0"
                 value={formData.rewardAmount}
                 onChange={(e) => setFormData({ ...formData, rewardAmount: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="10.00"
+                placeholder="0.00"
               />
-              <p className="text-xs text-gray-500 mt-1">Optional: Offer a reward to attract travelers</p>
+              {suggestedReward && (
+                <div className="mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, rewardAmount: suggestedReward.toFixed(2) })}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    💡 Suggested: €{suggestedReward.toFixed(2)}
+                    {distance && ` (${distance.toFixed(0)} km`}
+                    {formData.weight && `, ${formData.weight} kg`}
+                    {distance && `, ${formData.size?.toLowerCase()})`}
+                  </button>
+                </div>
+              )}
+              <p className="text-xs text-gray-500 mt-1">Optional: Offer a reward to attract travelers. Minimum €5.00, increments of €0.25.</p>
             </div>
           </div>
         </div>

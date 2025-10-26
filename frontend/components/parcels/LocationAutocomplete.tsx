@@ -19,11 +19,12 @@ interface LocationAutocompleteProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  onLocationSelect: (location: string, lat: number, lng: number) => void;
+  onLocationSelect: (location: string, lat: number, lng: number, fullAddress?: string) => void;
   placeholder?: string;
   required?: boolean;
   lat?: number;
   lng?: number;
+  fullAddress?: string;
 }
 
 export default function LocationAutocomplete({
@@ -33,10 +34,13 @@ export default function LocationAutocomplete({
   onLocationSelect,
   placeholder = 'Search for a location...',
   required = false,
+  fullAddress: externalFullAddress,
 }: LocationAutocompleteProps) {
   const [suggestions, setSuggestions] = useState<Location[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [internalFullAddress, setInternalFullAddress] = useState('');
+  const fullAddress = externalFullAddress !== undefined ? externalFullAddress : internalFullAddress;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -89,6 +93,9 @@ export default function LocationAutocomplete({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     onChange(query);
+    
+          // Clear full address when user starts typing
+          setInternalFullAddress('');
 
     // Debounce search
     if (timeoutRef.current) {
@@ -101,11 +108,19 @@ export default function LocationAutocomplete({
   };
 
   const handleSuggestionClick = (suggestion: Location) => {
-    // Use the full display_name which includes complete address
-    const fullAddress = suggestion.display_name;
+    // Create a shorter display version for the input
+    const city = suggestion.address?.city || suggestion.address?.town || suggestion.address?.village;
+    const country = suggestion.address?.country;
+    const shortName = city 
+      ? `${city}${country ? `, ${country}` : ''}`.trim()
+      : suggestion.display_name.split(',')[0]; // Just get the first part of the full address
     
-    onChange(fullAddress);
-    onLocationSelect(fullAddress, parseFloat(suggestion.lat), parseFloat(suggestion.lon));
+    // Store the short name in the input
+    onChange(shortName);
+    // Store the full address for display below
+    setInternalFullAddress(suggestion.display_name);
+    // Pass the short name and full address to the parent
+    onLocationSelect(shortName, parseFloat(suggestion.lat), parseFloat(suggestion.lon), suggestion.display_name);
     setShowSuggestions(false);
     setSuggestions([]);
   };
@@ -140,24 +155,39 @@ export default function LocationAutocomplete({
         )}
       </div>
 
+      {/* Full Address Display Below Input */}
+      {fullAddress && (
+        <div className="mt-2 text-xs text-gray-600 p-2 bg-gray-50 rounded-md">
+          📍 {fullAddress}
+        </div>
+      )}
+
       {/* Suggestions Dropdown */}
       {showSuggestions && suggestions.length > 0 && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-          {suggestions.map((suggestion, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => handleSuggestionClick(suggestion)}
-              className="w-full px-4 py-3 text-left hover:bg-sky-50 focus:bg-sky-50 focus:outline-none border-b border-gray-100 last:border-b-0"
-            >
-              <div className="font-medium text-gray-900 text-sm">
-                {suggestion.display_name}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                📍 {suggestion.lat}, {suggestion.lon}
-              </div>
-            </button>
-          ))}
+          {suggestions.map((suggestion, index) => {
+            const city = suggestion.address?.city || suggestion.address?.town || suggestion.address?.village;
+            const country = suggestion.address?.country;
+            const shortName = city 
+              ? `${city}${country ? `, ${country}` : ''}`.trim()
+              : suggestion.display_name.split(',')[0];
+            
+            return (
+              <button
+                key={index}
+                type="button"
+                onClick={() => handleSuggestionClick(suggestion)}
+                className="w-full px-4 py-3 text-left hover:bg-sky-50 focus:bg-sky-50 focus:outline-none border-b border-gray-100 last:border-b-0"
+              >
+                <div className="font-medium text-gray-900 text-sm">
+                  {shortName}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {suggestion.display_name}
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

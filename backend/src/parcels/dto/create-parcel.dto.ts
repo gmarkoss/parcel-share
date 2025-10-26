@@ -31,6 +31,11 @@ export class CreateParcelDto {
   size: ParcelSize;
 
   @IsOptional()
+  @IsNumber()
+  @Min(0.1)
+  weight?: number;
+
+  @IsOptional()
   @IsString()
   description?: string;
 

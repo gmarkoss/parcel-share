@@ -37,6 +37,9 @@ export class Parcel {
   @Column({ type: 'enum', enum: ParcelSize })
   size: ParcelSize;
 
+  @Column('decimal', { precision: 5, scale: 2, nullable: true })
+  weight: number;
+
   @Column('text', { nullable: true })
   description: string;
 

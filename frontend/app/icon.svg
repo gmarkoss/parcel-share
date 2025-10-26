@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <rect width="100" height="100" fill="#0ea5e9" rx="15"/>
+  
+  <!-- Parcel box -->
+  <g transform="translate(20,25)">
+    <!-- Main box -->
+    <rect x="5" y="10" width="50" height="35" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+    <!-- Tape strip -->
+    <rect x="5" y="22" width="50" height="6" fill="#ffffff" opacity="0.9"/>
+    <!-- Box label -->
+    <rect x="15" y="15" width="30" height="8" fill="#f59e0b" rx="2"/>
+    <text x="30" y="23" font-family="Arial" font-size="6" fill="#ffffff" text-anchor="middle" font-weight="bold">PKG</text>
+    <!-- Parcel shadow -->
+    <ellipse cx="30" cy="48" rx="25" ry="8" fill="#0284c7" opacity="0.3"/>
+  </g>
+  
+  <!-- Brand text -->
+  <text x="50" y="90" font-family="Arial" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="bold">Parcely</text>
+</svg>
+

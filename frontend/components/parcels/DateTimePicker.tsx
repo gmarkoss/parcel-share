@@ -193,7 +193,6 @@ export default function DateTimePicker({
               <option value="45">45</option>
             </select>
           </div>
-          <p className="text-xs text-gray-400 mt-1">15-minute intervals (0, 15, 30, 45)</p>
         </div>
       </div>
 
