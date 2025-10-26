@@ -20,6 +20,7 @@ async function bootstrap() {
     'http://localhost:3000',
     'http://localhost:3002',
     'https://parcel-share-qpbt-74f523k2v-markos-projects-5a4df66f.vercel.app',
+    'https://parcel-share-qpbt-ctko5fefx-markos-projects-5a4df66f.vercel.app',
     ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
   ];
   
