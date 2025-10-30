@@ -43,5 +43,14 @@ export class CreateTripDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  // UI-only fields: tolerated but ignored by service
+  @IsOptional()
+  @IsString()
+  fromFullAddress?: string;
+
+  @IsOptional()
+  @IsString()
+  toFullAddress?: string;
 }
 
