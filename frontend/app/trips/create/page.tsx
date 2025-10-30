@@ -93,8 +93,20 @@ export default function CreateTrip() {
     setIsLoading(true);
 
     try {
-      // Exclude UI-only full address fields from payload
-      const { fromFullAddress, toFullAddress, ...payload } = formData as any;
+      // Whitelist payload fields to ensure no UI-only properties are sent
+      const payload = {
+        fromLocation: formData.fromLocation,
+        toLocation: formData.toLocation,
+        fromLat: formData.fromLat,
+        fromLng: formData.fromLng,
+        toLat: formData.toLat,
+        toLng: formData.toLng,
+        transportType: formData.transportType,
+        departureTime: formData.departureTime,
+        arrivalTime: formData.arrivalTime,
+        availableCapacity: formData.availableCapacity,
+        notes: formData.notes,
+      };
       await api.post('/trips', payload);
       router.push('/dashboard');
     } catch (err: any) {
