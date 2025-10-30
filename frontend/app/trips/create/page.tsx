@@ -93,7 +93,9 @@ export default function CreateTrip() {
     setIsLoading(true);
 
     try {
-      await api.post('/trips', formData);
+      // Exclude UI-only full address fields from payload
+      const { fromFullAddress, toFullAddress, ...payload } = formData as any;
+      await api.post('/trips', payload);
       router.push('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to create trip');
@@ -160,8 +162,13 @@ export default function CreateTrip() {
               title="Swap locations"
               aria-label="Swap from and destination locations"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              {/* Up/Down arrows for mobile */}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:hidden text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+              </svg>
+              {/* Left/Right arrows for desktop */}
+              <svg xmlns="http://www.w3.org/2000/svg" className="hidden md:block h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
               </svg>
             </button>
           </div>
