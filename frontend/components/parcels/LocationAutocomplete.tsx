@@ -65,15 +65,15 @@ export default function LocationAutocomplete({
     setIsSearching(true);
     
     try {
-      // Search Benelux, France, and Germany
+      // Search Benelux, France, Germany + Serbia, Croatia, Hungary, Austria, Bosnia and Herzegovina
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?` +
         `format=json&` +
         `q=${encodeURIComponent(query)}&` +
-        `viewbox=2,48,11,54&` + // Benelux, France, Germany bounding box
-        `bounded=0&` + // Prefer results in viewbox but don't restrict strictly
+        // broaden region: remove strict viewbox to include Central/Eastern Europe
+        `bounded=0&` +
         `addressdetails=1&` +
-        `countrycodes=be,nl,lu,fr,de` + // Benelux, France, Germany only
+        `countrycodes=be,nl,lu,fr,de,rs,hr,hu,at,ba` + // + RS, HR, HU, AT, BA
         `limit=10&` +
         `dedupe=1&` +
         `timeout=10`
