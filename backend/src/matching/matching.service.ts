@@ -54,18 +54,21 @@ export class MatchingService {
       // Check distance match (simple proximity check - within ~50km)
       const distanceMatch = this.checkDistanceMatch(parcel, trip);
 
-      // Check time match
+      // Only consider matches if there's route similarity (required)
+      if (!distanceMatch) {
+        continue;
+      }
+
+      // Check time match (bonus for score, but not required)
       const timeMatch = this.checkTimeMatch(parcel, trip);
 
-      if (distanceMatch || timeMatch) {
-        matches.push({
-          trip,
-          parcel,
-          matchScore: this.calculateMatchScore(parcel, trip, distanceMatch, timeMatch),
-          distanceMatch,
-          timeMatch,
-        });
-      }
+      matches.push({
+        trip,
+        parcel,
+        matchScore: this.calculateMatchScore(parcel, trip, distanceMatch, timeMatch),
+        distanceMatch,
+        timeMatch,
+      });
     }
 
     // Sort by match score
@@ -100,17 +103,22 @@ export class MatchingService {
 
     for (const parcel of parcels) {
       const distanceMatch = this.checkDistanceMatch(parcel, trip);
+
+      // Only consider matches if there's route similarity (required)
+      if (!distanceMatch) {
+        continue;
+      }
+
+      // Check time match (bonus for score, but not required)
       const timeMatch = this.checkTimeMatch(parcel, trip);
 
-      if (distanceMatch || timeMatch) {
-        matches.push({
-          trip,
-          parcel,
-          matchScore: this.calculateMatchScore(parcel, trip, distanceMatch, timeMatch),
-          distanceMatch,
-          timeMatch,
-        });
-      }
+      matches.push({
+        trip,
+        parcel,
+        matchScore: this.calculateMatchScore(parcel, trip, distanceMatch, timeMatch),
+        distanceMatch,
+        timeMatch,
+      });
     }
 
     return matches.sort((a, b) => b.matchScore - a.matchScore);
