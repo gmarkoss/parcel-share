@@ -7,6 +7,13 @@ import api from '@/lib/api';
 import { Parcel, Trip } from '@/lib/types';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import StatusTab, { TabFilter } from '@/components/StatusTab';
+import {
+  filterParcels,
+  filterTrips,
+  getParcelCounts,
+  getTripCounts,
+} from '@/lib/filterUtils';
 
 export default function Dashboard() {
   const { user, isLoading: authLoading } = useAuth();
@@ -14,6 +21,8 @@ export default function Dashboard() {
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [parcelFilter, setParcelFilter] = useState<TabFilter>('active');
+  const [tripFilter, setTripFilter] = useState<TabFilter>('active');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -73,13 +82,25 @@ export default function Dashboard() {
       {/* My Parcels */}
       <div className="mb-6 sm:mb-8">
         <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">My Parcels</h2>
+        <StatusTab
+          activeFilter={parcelFilter}
+          onFilterChange={setParcelFilter}
+          activeCount={getParcelCounts(parcels).active}
+          pastCount={getParcelCounts(parcels).past}
+          completedCount={getParcelCounts(parcels).completed}
+          allCount={getParcelCounts(parcels).all}
+        />
         {parcels.length === 0 ? (
           <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md text-center text-sm sm:text-base text-gray-500">
             No parcels yet. Create your first parcel request!
           </div>
+        ) : filterParcels(parcels, parcelFilter).length === 0 ? (
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md text-center text-sm sm:text-base text-gray-500">
+            No {parcelFilter === 'active' ? 'active' : parcelFilter === 'past' ? 'past' : parcelFilter === 'completed' ? 'completed' : ''} parcels found.
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-            {parcels.map((parcel) => (
+            {filterParcels(parcels, parcelFilter).map((parcel) => (
               <div key={parcel.id} className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                 <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -119,13 +140,25 @@ export default function Dashboard() {
       {/* My Trips */}
       <div>
         <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">My Trips</h2>
+        <StatusTab
+          activeFilter={tripFilter}
+          onFilterChange={setTripFilter}
+          activeCount={getTripCounts(trips).active}
+          pastCount={getTripCounts(trips).past}
+          completedCount={getTripCounts(trips).completed}
+          allCount={getTripCounts(trips).all}
+        />
         {trips.length === 0 ? (
           <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md text-center text-sm sm:text-base text-gray-500">
             No trips yet. Offer your first trip!
           </div>
+        ) : filterTrips(trips, tripFilter).length === 0 ? (
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md text-center text-sm sm:text-base text-gray-500">
+            No {tripFilter === 'active' ? 'active' : tripFilter === 'past' ? 'past' : tripFilter === 'completed' ? 'completed' : ''} trips found.
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-            {trips.map((trip) => (
+            {filterTrips(trips, tripFilter).map((trip) => (
               <div key={trip.id} className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                 <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${

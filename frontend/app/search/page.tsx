@@ -5,6 +5,10 @@ import api from '@/lib/api';
 import { Parcel, Trip } from '@/lib/types';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import {
+  isParcelFuture,
+  isTripFuture,
+} from '@/lib/filterUtils';
 
 export default function Search() {
   const [activeTab, setActiveTab] = useState<'parcels' | 'trips'>('parcels');
@@ -22,8 +26,11 @@ export default function Search() {
         api.get('/parcels?status=requested'),
         api.get('/trips?status=planned'),
       ]);
-      setParcels(parcelsRes.data);
-      setTrips(tripsRes.data);
+      // Filter to only show future parcels and trips
+      const futureParcels = parcelsRes.data.filter(isParcelFuture);
+      const futureTrips = tripsRes.data.filter(isTripFuture);
+      setParcels(futureParcels);
+      setTrips(futureTrips);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     } finally {
