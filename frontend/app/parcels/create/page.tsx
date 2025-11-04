@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { ParcelSize } from '@/lib/types';
 import LocationAutocomplete from '@/components/parcels/LocationAutocomplete';
 import DateTimePicker from '@/components/parcels/DateTimePicker';
 
+// Disable static generation
+export const dynamic = 'force-dynamic';
+
 export default function CreateParcel() {
   const { user, isLoading: authLoading } = useAuth();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -36,9 +37,11 @@ export default function CreateParcel() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth/signin');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/auth/signin';
+      }
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading]);
 
   // Calculate distance function (Haversine formula)
   const calculateDistance = useCallback((lat1: number, lng1: number, lat2: number, lng2: number): number => {
@@ -135,7 +138,9 @@ export default function CreateParcel() {
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
       };
       await api.post('/parcels', payload);
-      router.push('/dashboard');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/dashboard';
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to create parcel');
     } finally {
@@ -348,7 +353,11 @@ export default function CreateParcel() {
           </button>
           <button
             type="button"
-            onClick={() => router.push('/dashboard')}
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.href = '/dashboard';
+              }
+            }}
             className="px-6 py-3 border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
           >
             Cancel

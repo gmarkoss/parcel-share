@@ -3,10 +3,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { MatchesService } from './matches.service';
-import { Match, MatchStatus } from '../entities/match.entity';
+import { Match } from '../entities/match.entity';
 import { Parcel } from '../entities/parcel.entity';
 import { Trip } from '../entities/trip.entity';
 import { User } from '../entities/user.entity';
+import { MatchStatus } from '../common/enums';
 
 describe('MatchesService', () => {
   let service: MatchesService;

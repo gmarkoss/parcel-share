@@ -2,25 +2,28 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { Notification } from '@/lib/types';
 import { format } from 'date-fns';
 
+// Disable static generation
+export const dynamic = 'force-dynamic';
+
 export default function Notifications() {
   const { user, isLoading: authLoading } = useAuth();
-  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth/signin');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/auth/signin';
+      }
     } else if (user) {
       fetchNotifications();
     }
-  }, [user, authLoading, router, filter]);
+  }, [user, authLoading, filter]);
 
   const fetchNotifications = async () => {
     try {

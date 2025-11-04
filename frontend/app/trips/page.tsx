@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { Trip } from '@/lib/types';
 import { format } from 'date-fns';
@@ -13,20 +12,24 @@ import {
   getTripCounts,
 } from '@/lib/filterUtils';
 
+// Disable static generation
+export const dynamic = 'force-dynamic';
+
 export default function TripsPage() {
   const { user, isLoading: authLoading } = useAuth();
-  const router = useRouter();
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<TabFilter>('active');
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/auth/signin');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/auth/signin';
+      }
     } else if (user) {
       fetchData();
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading]);
 
   const fetchData = async () => {
     try {

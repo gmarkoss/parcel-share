@@ -1,16 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import { Trip, MatchResult } from '@/lib/types';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import UserProfileCard from '@/components/UserProfileCard';
+
+// Disable static generation
+export const dynamic = 'force-dynamic';
 
 export default function TripDetail() {
   const params = useParams();
-  const router = useRouter();
   const { user } = useAuth();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [matches, setMatches] = useState<MatchResult[]>([]);
@@ -64,7 +67,11 @@ export default function TripDetail() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <button
-        onClick={() => router.back()}
+        onClick={() => {
+          if (typeof window !== 'undefined') {
+            window.history.back();
+          }
+        }}
         className="text-blue-600 hover:text-blue-700 mb-4 flex items-center"
       >
         ← Back
@@ -108,8 +115,11 @@ export default function TripDetail() {
 
           <div>
             <h3 className="font-semibold text-lg mb-2">Traveler</h3>
-            <p className="text-gray-700">{trip.traveler?.name || 'Unknown'}</p>
-            <p className="text-gray-600 text-sm">{trip.traveler?.email || 'Unknown'}</p>
+            {trip.traveler ? (
+              <UserProfileCard user={trip.traveler} currentUserId={user?.id} />
+            ) : (
+              <p className="text-gray-700">Unknown</p>
+            )}
           </div>
         </div>
 
@@ -161,9 +171,12 @@ export default function TripDetail() {
                 <p className="text-sm text-gray-700 mb-2">
                   Pickup: {format(new Date(match.parcel.desiredPickupDate), 'MMM d, yyyy HH:mm')}
                 </p>
-                <p className="text-sm text-gray-700 mb-2">
-                  Sender: {match.parcel.sender?.name || 'Unknown'}
-                </p>
+                {match.parcel.sender && (
+                  <div className="mb-3">
+                    <p className="text-sm text-gray-600 mb-2">Sender:</p>
+                    <UserProfileCard user={match.parcel.sender} currentUserId={user?.id} />
+                  </div>
+                )}
                 {match.parcel.rewardAmount && (
                   <p className="text-green-600 font-semibold mb-2">
                     Reward: €{match.parcel.rewardAmount}

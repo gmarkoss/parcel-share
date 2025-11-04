@@ -41,12 +41,12 @@ export default function Navbar() {
               <>
                 <div className="hidden lg:flex items-center space-x-4">
                   <span className="text-sm text-gray-700">Hello, {user.name}</span>
-                  <button
-                    onClick={signOut}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium"
-                  >
-                    Sign Out
-                  </button>
+                <button
+                  onClick={signOut}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Sign Out
+                </button>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}

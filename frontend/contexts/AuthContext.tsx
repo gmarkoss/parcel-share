@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { User } from '@/lib/types';
 
@@ -20,14 +19,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+
+  const navigate = useCallback((path: string) => {
+    if (typeof window !== 'undefined') {
+      window.location.href = path;
+    }
+  }, []);
 
   const fetchUserProfile = useCallback(async () => {
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
     try {
       const response = await api.get('/users/profile');
       setUser(response.data);
-    } catch (error) {
-      console.error('Failed to fetch user profile:', error);
+    } catch (error: any) {
+      // Silently handle 401 errors - user is just not authenticated
+      if (error.response?.status !== 401) {
+        console.error('Failed to fetch user profile:', error);
+      }
       localStorage.removeItem('token');
       setToken(null);
       setUser(null);
@@ -37,7 +49,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Check for existing token on mount
+    // Check for existing token on mount - only on client side
+    if (typeof window === 'undefined') {
+      setIsLoading(false);
+      return;
+    }
+
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
@@ -57,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(newUser);
       setIsLoading(false);
       
-      router.push('/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Signin error:', error);
       throw error;
@@ -74,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(newUser);
       setIsLoading(false);
       
-      router.push('/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Signup error:', error);
       throw error;
@@ -85,7 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    router.push('/auth/signin');
+    navigate('/auth/signin');
   };
 
   return (
@@ -98,9 +115,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    // During SSR or when AuthProvider isn't mounted yet, return default values
+    // This prevents errors during SSR and initial client-side render
+    return {
+      user: null,
+      token: null,
+      isLoading: true,
+      signIn: async () => {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/auth/signin';
+        }
+      },
+      signUp: async () => {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/auth/signup';
+        }
+      },
+      signOut: () => {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/auth/signin';
+        }
+      },
+    };
   }
   return context;
 }
-
-

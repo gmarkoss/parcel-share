@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import { Parcel, Trip } from '@/lib/types';
 import { format } from 'date-fns';
@@ -11,6 +12,7 @@ import {
 } from '@/lib/filterUtils';
 
 export default function Search() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'parcels' | 'trips'>('parcels');
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -110,7 +112,19 @@ export default function Search() {
                     </p>
                   )}
                   <p className="text-xs text-gray-500 mb-3">
-                    Sender: {parcel.sender?.name || 'Unknown'}
+                    Sender:{' '}
+                    {parcel.sender ? (
+                      <>
+                        <Link 
+                          href={`/users/${parcel.sender.id}`}
+                          className="text-blue-600 hover:text-blue-700 hover:underline"
+                        >
+                          {parcel.sender.name}{user && parcel.sender.id === user.id && ' (me)'}
+                        </Link>
+                      </>
+                    ) : (
+                      'Unknown'
+                    )}
                   </p>
                   <Link
                     href={`/parcels/${parcel.id}`}
@@ -159,7 +173,19 @@ export default function Search() {
                     </p>
                   )}
                   <p className="text-xs text-gray-500 mb-3">
-                    Traveler: {trip.traveler?.name || 'Unknown'}
+                    Traveler:{' '}
+                    {trip.traveler ? (
+                      <>
+                        <Link 
+                          href={`/users/${trip.traveler.id}`}
+                          className="text-blue-600 hover:text-blue-700 hover:underline"
+                        >
+                          {trip.traveler.name}{user && trip.traveler.id === user.id && ' (me)'}
+                        </Link>
+                      </>
+                    ) : (
+                      'Unknown'
+                    )}
                   </p>
                   <Link
                     href={`/trips/${trip.id}`}

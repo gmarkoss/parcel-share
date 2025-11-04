@@ -9,7 +9,7 @@ export const api = axios.create({
   },
 });
 
-// Add token to requests
+// Add token to requests - only on client side
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('token');
@@ -27,7 +27,11 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
-        window.location.href = '/auth/signin';
+        // Only redirect if not already on signin/signup page
+        const currentPath = window.location.pathname;
+        if (!currentPath.startsWith('/auth/')) {
+          window.location.href = '/auth/signin';
+        }
       }
     }
     return Promise.reject(error);

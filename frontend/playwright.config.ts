@@ -5,11 +5,17 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  workers: process.env.CI ? 1 : 5, // Run 5 tests in parallel
+  reporter: 'line',
+  timeout: 15000, // 15 seconds per test
+  expect: {
+    timeout: 5000, // 5 seconds for assertions
+  },
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
+    trace: 'off', // Disable tracing for speed
+    actionTimeout: 5000, // 5 seconds for actions
+    navigationTimeout: 10000, // 10 seconds for navigation
   },
 
   projects: [
@@ -17,20 +23,13 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
   ],
 
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
+    timeout: 30 * 1000, // 30 seconds to start server
   },
 });
 

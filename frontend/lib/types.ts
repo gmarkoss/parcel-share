@@ -36,6 +36,15 @@ export interface User {
   updatedAt: string;
 }
 
+export interface UserStatistics {
+  userId: string;
+  averageRating: number;
+  totalReviews: number;
+  completedDeliveries: number;
+  memberSince: string;
+  isVerified: boolean;
+}
+
 export interface Parcel {
   id: string;
   fromLocation: string;

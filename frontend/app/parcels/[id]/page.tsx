@@ -1,16 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import { Parcel, MatchResult } from '@/lib/types';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import UserProfileCard from '@/components/UserProfileCard';
+
+// Disable static generation
+export const dynamic = 'force-dynamic';
 
 export default function ParcelDetail() {
   const params = useParams();
-  const router = useRouter();
   const { user } = useAuth();
   const [parcel, setParcel] = useState<Parcel | null>(null);
   const [matches, setMatches] = useState<MatchResult[]>([]);
@@ -46,7 +49,9 @@ export default function ParcelDetail() {
   const acceptDelivery = async (tripId: string) => {
     try {
       await api.post(`/parcels/${params.id}/accept`, { tripId });
-      router.push('/dashboard');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/dashboard';
+      }
     } catch (error: any) {
       alert(error.response?.data?.message || 'Failed to accept delivery');
     }
@@ -63,7 +68,11 @@ export default function ParcelDetail() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <button
-        onClick={() => router.back()}
+        onClick={() => {
+          if (typeof window !== 'undefined') {
+            window.history.back();
+          }
+        }}
         className="text-blue-600 hover:text-blue-700 mb-4 flex items-center"
       >
         ← Back
@@ -110,8 +119,11 @@ export default function ParcelDetail() {
 
           <div>
             <h3 className="font-semibold text-lg mb-2">Sender</h3>
-            <p className="text-gray-700">{parcel.sender?.name || 'Unknown'}</p>
-            <p className="text-gray-600 text-sm">{parcel.sender?.email || 'Unknown'}</p>
+            {parcel.sender ? (
+              <UserProfileCard user={parcel.sender} currentUserId={user?.id} />
+            ) : (
+              <p className="text-gray-700">Unknown</p>
+            )}
           </div>
         </div>
 
@@ -125,8 +137,7 @@ export default function ParcelDetail() {
         {parcel.carrier && (
           <div className="mt-4">
             <h3 className="font-semibold text-lg mb-2">Carrier</h3>
-            <p className="text-gray-700">{parcel.carrier?.name || 'Unknown'}</p>
-            <p className="text-gray-600 text-sm">{parcel.carrier?.email || 'Unknown'}</p>
+            <UserProfileCard user={parcel.carrier} currentUserId={user?.id} />
           </div>
         )}
       </div>
@@ -155,9 +166,12 @@ export default function ParcelDetail() {
                 <p className="text-sm text-gray-700 mb-2">
                   Departure: {format(new Date(match.trip.departureTime), 'MMM d, yyyy HH:mm')}
                 </p>
-                <p className="text-sm text-gray-700 mb-2">
-                  Traveler: {match.trip.traveler?.name || 'Unknown'}
-                </p>
+                {match.trip.traveler && (
+                  <div className="mb-3">
+                    <p className="text-sm text-gray-600 mb-2">Traveler:</p>
+                    <UserProfileCard user={match.trip.traveler} currentUserId={user?.id} />
+                  </div>
+                )}
 
                 <div className="flex gap-2 mt-4">
                   {user && user.id !== parcel.senderId && (

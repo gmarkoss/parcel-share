@@ -4,8 +4,9 @@ import { Repository } from 'typeorm';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TripsService } from './trips.service';
-import { Trip, TripStatus } from '../entities/trip.entity';
+import { Trip } from '../entities/trip.entity';
 import { User } from '../entities/user.entity';
+import { TripStatus } from '../common/enums';
 
 describe('TripsService', () => {
   let service: TripsService;

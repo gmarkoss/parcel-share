@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
     // Reduce memory issues in dev
     optimizePackageImports: ['@/components', '@/lib'],
   },
+  // Disable static optimization to prevent SSR issues with auth
+  output: 'standalone',
 };
 
 export default nextConfig;

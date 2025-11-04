@@ -3,11 +3,12 @@ import {
   Get,
   Put,
   Body,
+  Param,
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtAuthGuard, CurrentUser } from '../common';
@@ -40,6 +41,36 @@ export class UsersController {
   ) {
     const updatedUser = await this.usersService.updateProfile(user.id, updateProfileDto);
     return ResponseMapper.toUserResponse(updatedUser);
+  }
+
+  @Get(':userId/statistics')
+  @ApiOperation({ summary: 'Get user statistics' })
+  @ApiParam({ name: 'userId', description: 'User ID' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'User statistics',
+    schema: {
+      properties: {
+        userId: { type: 'string' },
+        averageRating: { type: 'number' },
+        totalReviews: { type: 'number' },
+        completedDeliveries: { type: 'number' },
+        memberSince: { type: 'string', format: 'date-time' },
+        isVerified: { type: 'boolean' },
+      },
+    },
+  })
+  async getUserStatistics(@Param('userId') userId: string) {
+    return await this.usersService.getUserStatistics(userId);
+  }
+
+  @Get(':userId')
+  @ApiOperation({ summary: 'Get user profile by ID' })
+  @ApiParam({ name: 'userId', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User profile', type: UserResponseDto })
+  async getUserById(@Param('userId') userId: string) {
+    const userProfile = await this.usersService.getProfile(userId);
+    return ResponseMapper.toUserResponse(userProfile);
   }
 }
 

@@ -7,9 +7,10 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
-import { Review, ReviewType } from '../entities/review.entity';
-import { Match, MatchStatus } from '../entities/match.entity';
+import { Review } from '../entities/review.entity';
+import { Match } from '../entities/match.entity';
 import { User } from '../entities/user.entity';
+import { ReviewType, MatchStatus } from '../common/enums';
 
 describe('ReviewsService', () => {
   let service: ReviewsService;
@@ -274,7 +275,11 @@ describe('ReviewsService', () => {
 
       const result = await service.getAverageRating('traveler-1');
 
-      expect(result).toBe(4.7); // (5+4+5)/3 = 4.666... rounded to 4.7
+      expect(result).toEqual({
+        userId: 'traveler-1',
+        averageRating: 4.7, // (5+4+5)/3 = 4.666... rounded to 4.7
+        totalReviews: 3,
+      });
     });
 
     it('should return 0 if no reviews', async () => {
@@ -282,7 +287,11 @@ describe('ReviewsService', () => {
 
       const result = await service.getAverageRating('traveler-1');
 
-      expect(result).toBe(0);
+      expect(result).toEqual({
+        userId: 'traveler-1',
+        averageRating: 0,
+        totalReviews: 0,
+      });
     });
   });
 });
