@@ -89,6 +89,12 @@ export default function CreateParcel() {
       const minReward = 5;
       const rounded = Math.max(minReward, Math.round(baseReward * 4) / 4); // Round to nearest 0.25
       setSuggestedReward(rounded);
+      
+      // Pre-fill reward amount with minimum/suggested value if empty or zero
+      const currentReward = parseFloat(formData.rewardAmount) || 0;
+      if (currentReward === 0) {
+        setFormData(prev => ({ ...prev, rewardAmount: rounded.toFixed(2) }));
+      }
     } else {
       setDistance(null);
       setSuggestedReward(null);
@@ -318,10 +324,11 @@ export default function CreateParcel() {
                     onClick={() => setFormData({ ...formData, rewardAmount: suggestedReward.toFixed(2) })}
                     className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                   >
-                    💡 Suggested: €{suggestedReward.toFixed(2)}
+                    💡 Recommended: €{suggestedReward.toFixed(2)}
                     {distance && ` (${distance.toFixed(0)} km`}
                     {formData.weight && `, ${formData.weight} kg`}
                     {distance && `, ${formData.size?.toLowerCase()})`}
+                    {formData.rewardAmount && parseFloat(formData.rewardAmount) === suggestedReward ? ' ✓' : ' - Click to reset'}
                   </button>
                 </div>
               )}
